@@ -1,9 +1,9 @@
 // Individual todo item component with edit, delete, alarm, notes, and attachments functionality
 import { useState } from 'react';
-import { FiEdit2, FiTrash2, FiCheck, FiBell, FiFileText, FiPaperclip, FiMic, FiStar, FiMapPin } from 'react-icons/fi';
+import { FiEdit2, FiTrash2, FiCheck, FiBell, FiFileText, FiPaperclip, FiStar, FiMapPin } from 'react-icons/fi';
 import { motion } from 'framer-motion';
 import { useTodoDispatch } from '../context/TodoContext';
-import { useVoiceInput } from '../hooks/useVoiceInput';
+// voice input removed
 import { AlarmModal } from './AlarmModal';
 import { NotesModal } from './NotesModal';
 import { AttachmentsModal } from './AttachmentsModal';
@@ -19,9 +19,7 @@ export const TodoItem = ({ todo }) => {
   const [isLocationOpen, setIsLocationOpen] = useState(false);
 
   const { updateTodo, trashTask, setAlarm, setNotes, addAttachment, removeAttachment, togglePin } = useTodoDispatch();
-  const { isListening, startListening, stopListening, isSupported } = useVoiceInput((text) => {
-    updateTodo(todo.id, { text });
-  });
+  // voice input removed
 
   // Handle saving edited todo
   const handleSaveEdit = () => {
@@ -186,22 +184,7 @@ export const TodoItem = ({ todo }) => {
                 <FiPaperclip size={18} />
               </motion.button>
 
-              {/* Voice Input Button */}
-              {isSupported && (
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={isListening ? stopListening : startListening}
-                  className={`p-2 rounded transition-colors duration-200 ${
-                    isListening
-                      ? 'text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-100 dark:hover:bg-gray-600 animate-pulse'
-                      : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600'
-                  }`}
-                  title={isListening ? 'Stop Recording' : 'Start Voice Input'}
-                >
-                  <FiMic size={18} />
-                </motion.button>
-              )}
+              {/* voice input removed */}
 
               {/* Edit Button */}
               <motion.button

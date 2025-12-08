@@ -1,11 +1,11 @@
-// Input component for adding new todos with voice support
+// Input component for adding new todos
 import { useState } from 'react';
-import { FiPlus, FiMic } from 'react-icons/fi';
+import { FiPlus } from 'react-icons/fi';
 // eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
 import { v4 as uuidv4 } from 'uuid';
 import { useTodoDispatch } from '../context/TodoContext';
-import { useVoiceInput } from '../hooks/useVoiceInput';
+// voice input removed
 
 export const TodoInput = () => {
   const [input, setInput] = useState('');
@@ -43,22 +43,7 @@ export const TodoInput = () => {
     setAlarmTime('');
   };
 
-  const { isListening, transcript, startListening, stopListening, isSupported } = useVoiceInput((text) => {
-    console.log('Voice callback - updating input:', text);
-    setInput(text);
-  });
-
-  const handleStopVoice = () => {
-    console.log('Stop voice called with transcript:', transcript);
-    stopListening();
-    // Auto-add task when stopping voice if there's text
-    if (transcript && transcript.trim()) {
-      setTimeout(() => {
-        console.log('Auto-adding task from voice:', transcript);
-        handleAddTodoWithText(transcript);
-      }, 200);
-    }
-  };
+  // voice input removed
 
   const handleAddTodo = () => {
     const text = input.trim();
@@ -104,30 +89,14 @@ export const TodoInput = () => {
         <div className="flex flex-col sm:flex-row gap-2">
           <input
             type="text"
-            value={isListening && transcript ? transcript : input}
+            value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Add a new task..."
             className="flex-1 px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-colors duration-200 text-sm sm:text-base"
           />
 
-          {isSupported && (
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={isListening ? handleStopVoice : startListening}
-              className={`px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold flex items-center justify-center gap-1 sm:gap-2 transition-colors duration-200 text-sm sm:text-base whitespace-nowrap ${
-                isListening
-                  ? 'bg-red-500 hover:bg-red-600 text-white animate-pulse'
-                  : 'bg-gray-500 hover:bg-gray-600 text-white'
-              }`}
-              title={isListening ? 'Stop Recording' : 'Start Voice Input'}
-            >
-              <FiMic size={18} className="hidden sm:inline" />
-              <FiMic size={16} className="sm:hidden" />
-              <span className="hidden sm:inline">{isListening ? 'Stop' : 'Voice'}</span>
-            </motion.button>
-          )}
+          {/* voice input removed */}
 
           <motion.button
             whileHover={{ scale: 1.05 }}
