@@ -1,60 +1,110 @@
 # TaskMatrix
 
-TaskMatrix is a personal task manager / todo web app built with React, Vite and TailwindCSS. It focuses on flexible task creation, scheduling, reminders, templates and integrations that help you organize daily work and life.
-
-**Author:** Naren S J
-
-**Contact:**
-- Email: narensonu1520@gmail.com
-- Phone: +91 82968 33381
-- GitHub: Naren1520
+**TaskMatrix** is a modern, flexible, and smart personal task manager built with **React**, **Vite**, and **TailwindCSS**.
+It focuses on powerful task creation, reminders, scheduling, templates, geofencing, and optional AI-assisted planning — all designed to help you organize your day effortlessly.
 
 ---
 
-**Key Features**
-- Create, edit, and manage tasks quickly
-- Alarms & reminders with custom ringtones and trimming
-- Location-based reminders (geofencing) with adjustable radius
-- Recurring tasks and flexible recurrence rules
-- Attach notes, links and files to tasks
-- Templates for reusable task definitions
-- Timeline/Gantt view for scheduling tasks
-- Calendar view for date-based planning
-- Analytics for task statistics and trends
-- Import/Export for backup and transfer (JSON)
-- Plugins system for optional features (Habit, Water, Budget, etc.)
-- Weather widget with suitability suggestions (optional)
-- AI Assistant & Smart Suggestions (optional)
-- Theme selector (dark/light) and accessibility helpers
+## Author
+
+**Naren S J**
+
+**Contact**
+
+* **Email:** [narensonu1520@gmail.com](mailto:narensonu1520@gmail.com)
+* **Phone:** +91 82968 33381
+* **GitHub:** [Naren1520](https://github.com/Naren1520)
+
+---
+## Deployment
+* https://task-matrix-three.vercel.app/
+
+##  Features at a Glance
+
+###  Task Management
+
+* Fast creation, editing, and organization of tasks
+* Notes, links, and file attachments
+* Recurring tasks with flexible rules (daily, weekly, custom)
+
+###  Reminders & Alarms
+
+* Custom ringtones with trimming support
+* Alarm volume & playback settings
+* Notifications with optional snooze
+* Works even while using other tabs (browser permission required)
+
+### Location-Based Reminders (Geofencing)
+
+* Trigger reminders when entering or leaving an area
+* Adjustable radius for accuracy
+* Lightweight geofencing module optimized for battery/performance
+
+### Planning & Views
+
+* **Calendar View:** Date-first planning
+* **Timeline / Gantt View:** Visual scheduling made simple
+* Drag & drop (if enabled) for quick date adjustments
+
+### Templates & Plugins
+
+* Create reusable templates for recurring task formats
+* Optional plugin modules:
+
+  * Habit tracker
+  * Water intake tracker
+  * Basic budgeting
+  * Custom plugin support
+
+### Weather Integration (Optional)
+
+* Uses OpenWeatherMap
+* Weather-based suitability suggestions (e.g., “Good time for outdoor tasks”)
+* City persists via `localStorage`
+
+### AI Assistant (Optional)
+
+* Smart task suggestions
+* Auto-generates routines, habit plans & priority sorting
+* Requires configuration in `aiService.js` or env variables
+
+### Customization
+
+* Dark/Light theme toggle
+* Accessibility helpers (reduced motion, dyslexia-friendly fonts)
+* Clean layout powered by TailwindCSS
 
 ---
 
-**Quick Start (Development)**
+## Development Setup
 
-Requirements:
-- Node.js (16+ recommended)
-- npm (or yarn)
+### **Requirements**
 
-Install dependencies:
+* **Node.js 16+**
+* **npm** (or **yarn**)
+
+---
+
+### **Install Dependencies**
 
 ```powershell
 cd "c:\Users\Naren S J\Downloads\Todo website"
 npm install
 ```
 
-Run dev server:
+### **Run Development Server**
 
 ```powershell
 npm run dev
 ```
 
-Build for production:
+### **Build for Production**
 
 ```powershell
 npm run build
 ```
 
-Preview production build locally:
+### **Preview Production Build**
 
 ```powershell
 npm run preview
@@ -62,15 +112,18 @@ npm run preview
 
 ---
 
-**Environment Variables**
-Create a `.env` or set environment variables with the `VITE_` prefix.
+##  Environment Variables
 
-- `VITE_WEATHER_API_KEY` - OpenWeatherMap API key (optional)
-- `VITE_WEATHER_API_URL` - OpenWeatherMap base URL (default: `https://api.openweathermap.org/data/2.5`)
-- `VITE_ENABLE_WEATHER` - `true` to enable weather widget
-- `VITE_ENABLE_AI` - `true` to enable AI features (requires backend/AI config in `aiService.js` or env)
+TaskMatrix uses Vite, so all environment variables must start with **`VITE_`**.
 
-Example `.env`:
+| Variable               | Description                       | Example                                   |
+| ---------------------- | --------------------------------- | ----------------------------------------- |
+| `VITE_WEATHER_API_KEY` | OpenWeatherMap API key (optional) | `abc123...`                               |
+| `VITE_WEATHER_API_URL` | Weather API base URL              | `https://api.openweathermap.org/data/2.5` |
+| `VITE_ENABLE_WEATHER`  | Enable/disable weather widget     | `true`                                    |
+| `VITE_ENABLE_AI`       | Enable AI features                | `false`                                   |
+
+### Example `.env`
 
 ```
 VITE_WEATHER_API_KEY=your_api_key_here
@@ -81,17 +134,48 @@ VITE_ENABLE_AI=false
 
 ---
 
-**Notes & Tips**
-- Weather widget stores selected city in `localStorage` under the key `weather_city`. To reset it in the browser console run: `localStorage.removeItem('weather_city')` then refresh.
-- Alarms rely on browser audio playback permissions; if audio does not play automatically, verify site permissions and Settings -> Alarm volume.
-- Geofencing works after the initial loader period; ensure location permission is allowed in the browser.
+## 📝 Notes & Tips
+
+* **Reset weather city:**
+  Run this in browser console:
+  `localStorage.removeItem('weather_city')`
+* **Alarm audio not playing?**
+  Check browser sound permissions + Alarm volume settings.
+* **Location-based reminders:**
+  Require location permission and may take a few seconds to activate after page load.
+* **Backup & migration:**
+  Use **Import/Export** to save tasks as JSON anytime.
 
 ---
 
-**Contributing**
-Contributions are welcome. Open an issue or submit a PR. Please include a clear description and, when relevant, a minimal reproduction.
+##  Folder Structure (Recommended Overview)
+
+```
+src/
+ ├─ components/       # Reusable UI blocks
+ ├─ pages/            # Main views (Home, Calendar, Timeline, etc.)
+ ├─ features/         # Plugins & optional modules
+ ├─ hooks/            # Custom hooks
+ ├─ utils/            # Helper functions
+ ├─ services/         # API, weather, AI, local storage services
+ ├─ styles/           # Global Tailwind overrides
+ └─ assets/           # Icons, sounds, images
+```
 
 ---
 
-**License**
-This project does not include a license file. Add one (e.g., MIT) if you intend to open-source it.
+##  Future Enhancements (Planned)
+
+* Voice task creation
+* Smart routines powered by on-device context
+
+---
+
+##  Contributing
+
+Pull requests are welcome!
+For major changes, please open an issue to discuss what you’d like to modify.
+
+---
+
+**TaskMatrix — Your personal productivity companion, built with care and creativity.**
