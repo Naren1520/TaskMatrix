@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Header, TodoInput, TodoList, FilterButtons, Footer, AlarmReminderNotification, SettingsPage, CalendarView, AnalyticsPage, Loader, TemplatesPage, PluginsPage, TimelinePage, GuidePage, OtherServicesPage, AboutDeveloperPage, AiAssistantPanel, SmartSuggestionsModal, WeatherWidget, TimeTablePage } from './components';
+import { FocusMode, StudyMode } from './components';
+import { useStudyMode } from './context/StudyModeContext';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { useAlarmNotifications, playNotificationSound } from './hooks/useAlarmNotifications';
 import useGeofenceWatcher from './hooks/useGeofenceWatcher';
@@ -117,6 +119,20 @@ function App() {
     return <Loader />;
   }
 
+  // If study mode is currently running, render only the StudyMode screen (hide header/footer/other UI)
+  try {
+    const studyCtx = useStudyMode();
+    if (studyCtx?.running) {
+      return (
+        <div className="min-h-screen bg-black">
+          <StudyMode onBack={() => setCurrentPage('focus')} />
+        </div>
+      );
+    }
+  } catch (err) {
+    // if provider not available or hook fails, ignore and render normally
+  }
+
   // Decide what to render in the main area based on app state
   let mainContent = null;
 
@@ -144,6 +160,12 @@ function App() {
         break;
       case 'timeline':
         mainContent = <TimelinePage onBack={() => setCurrentPage('tasks')} />;
+        break;
+      case 'focus':
+        mainContent = <FocusMode onBack={() => setCurrentPage('tasks')} onNavigate={(p) => setCurrentPage(p)} />;
+        break;
+      case 'study':
+        mainContent = <StudyMode onBack={() => setCurrentPage('focus')} />;
         break;
       case 'guide':
         mainContent = <GuidePage onBack={() => setCurrentPage('tasks')} />;

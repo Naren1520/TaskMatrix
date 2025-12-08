@@ -26,5 +26,7 @@ export { AiAssistantPanel } from './AiAssistantPanel';
 export { SmartSuggestionsModal } from './SmartSuggestionsModal';
 export { WeatherWidget } from './WeatherWidget';
 export { TimeTablePage } from './TimeTablePage';
+export { FocusMode } from './FocusMode';
+export { StudyMode } from './StudyMode';
 
 
