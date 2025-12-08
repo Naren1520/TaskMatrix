@@ -153,45 +153,44 @@ export const StudyMode = ({ onBack }) => {
   const displaySec = secsLeft % 60;
 
   return (
-    <div ref={containerRef} className="fixed inset-0 bg-black text-white z-50 flex flex-col">
+    <div ref={containerRef} className="fixed inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 text-white z-50 flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-slate-700/50 dark:border-slate-700">
         <div>
-          <h2 className="text-2xl font-semibold">Study Mode</h2>
-          <div className="text-sm text-white/70">Focus and study tools</div>
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Study Mode</h2>
+          <div className="text-sm text-slate-400">Focus and study tools</div>
         </div>
         <div className="flex items-center gap-3">
-          {!running && <button onClick={() => { if (onBack) onBack(); }} className="px-3 py-2 rounded bg-white/10">Close</button>}
-          {running && <div className="px-3 py-2 rounded bg-red-600 text-white">Session Running</div>}
+          {!running && <button onClick={() => { if (onBack) onBack(); }} className="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white transition-colors">Close</button>}
+          {running && <div className="px-4 py-2 rounded-lg bg-gradient-to-r from-red-500 to-red-600 text-white font-medium">Session Running</div>}
         </div>
       </div>
 
       {/* Main content grid */}
-      <div className="flex-1 p-6 overflow-auto">
+      <div className="flex-1 p-6 overflow-auto bg-gradient-to-b from-slate-800/50 to-slate-900/50">
         {!running && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
             {/* Timer Card */}
-            <div className="bg-white/6 rounded-lg p-6 flex flex-col">
-              <h3 className="text-lg font-semibold mb-3">Study Timer</h3>
-              <div className="flex gap-3 mb-4">
-                <button onClick={() => setMinutesInput(25)} className="px-3 py-2 rounded bg-white/10">25m</button>
-                <button onClick={() => setMinutesInput(50)} className="px-3 py-2 rounded bg-white/10">50m</button>
-                <button onClick={() => setMinutesInput(15)} className="px-3 py-2 rounded bg-white/10">15m</button>
+            <div className="bg-slate-800/40 dark:bg-slate-800/60 rounded-xl p-6 flex flex-col border border-slate-700/50 hover:border-slate-600/50 transition-colors shadow-lg">
+              <h3 className="text-lg font-semibold text-white mb-4">Study Timer</h3>
+              <div className="flex gap-2 mb-4 flex-wrap">
+                <button onClick={() => setMinutesInput(25)} className="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white text-sm font-medium transition-colors">25m</button>
+                <button onClick={() => setMinutesInput(50)} className="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white text-sm font-medium transition-colors">50m</button>
+                <button onClick={() => setMinutesInput(15)} className="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white text-sm font-medium transition-colors">15m</button>
               </div>
               <div className="flex items-center gap-3 mb-4">
-                <input type="number" min={1} value={minutesInput} onChange={(e) => setMinutesInput(Number(e.target.value || 0))} className="w-28 px-3 py-2 rounded text-black" />
-                <span className="text-white/80">minutes</span>
+                <input type="number" min={1} value={minutesInput} onChange={(e) => setMinutesInput(Number(e.target.value || 0))} className="w-24 px-3 py-2 rounded-lg bg-slate-700/60 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                <span className="text-slate-300">minutes</span>
               </div>
               <div className="flex gap-3 mt-auto">
-                <button onClick={() => handleStart(minutesInput * 60)} className="px-6 py-3 rounded bg-green-500">Start</button>
-                <button onClick={() => { if (onBack) onBack(); }} className="px-6 py-3 rounded bg-white/10">Cancel</button>
+                <button onClick={() => handleStart(minutesInput * 60)} className="flex-1 px-6 py-3 rounded-lg bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold transition-all transform hover:scale-105">Start</button>
+                <button onClick={() => { if (onBack) onBack(); }} className="px-6 py-3 rounded-lg bg-slate-700 hover:bg-slate-600 text-white font-medium transition-colors">Cancel</button>
               </div>
             </div>
 
             {/* PDF Card */}
-            <div className="bg-white/6 rounded-lg p-6 flex flex-col">
-              <h3 className="text-lg font-semibold mb-2">Read PDF</h3>
-              <p className="text-sm text-white/70 mb-3">Import a PDF to read in a large viewer.</p>
+            <div className="bg-slate-800/40 dark:bg-slate-800/60 rounded-xl p-6 flex flex-col border border-slate-700/50 hover:border-slate-600/50 transition-colors shadow-lg">
+              <h3 className="text-lg font-semibold text-white mb-3">Read PDF</h3>
               <input type="file" accept="application/pdf" onChange={(e) => {
                 const f = e.target.files && e.target.files[0];
                 if (f) {
@@ -200,31 +199,29 @@ export const StudyMode = ({ onBack }) => {
                   setPdfName(f.name || 'document');
                   setShowPdf(true);
                 }
-              }} className="text-sm text-white/80 mb-3" />
-              {pdfUrl && <div className="text-sm text-white/80 mb-3">Loaded: {pdfName || 'document'}</div>}
+              }} className="text-sm text-slate-300 mb-3 file:mr-3 file:px-4 file:py-2 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-slate-700 file:text-white hover:file:bg-slate-600" />
+              {pdfUrl && <div className="text-sm text-slate-400 mb-3 flex items-center gap-2"><span className="w-2 h-2 bg-green-500 rounded-full"></span>Loaded: {pdfName || 'document'}</div>}
               <div className="mt-auto">
-                <button onClick={() => { if (pdfUrl) setShowPdf(true); }} className="px-4 py-2 rounded bg-indigo-600">Open Reader</button>
+                <button onClick={() => { if (pdfUrl) setShowPdf(true); }} className="w-full px-4 py-3 rounded-lg bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white font-semibold transition-all transform hover:scale-105">Open Reader</button>
               </div>
             </div>
 
             {/* YouTube Card */}
-            <div className="bg-white/6 rounded-lg p-6 flex flex-col">
-              <h3 className="text-lg font-semibold mb-2">YouTube (In-site)</h3>
-              <p className="text-sm text-white/70 mb-3">Search or paste a URL to open a video inside Study Mode.</p>
-              <div className="w-full text-sm text-white/70 mb-2">YouTube search uses <code className="bg-white/5 px-1 rounded">VITE_YT_API_KEY</code>. Paste a URL to open directly.</div>
+            <div className="bg-slate-800/40 dark:bg-slate-800/60 rounded-xl p-6 flex flex-col border border-slate-700/50 hover:border-slate-600/50 transition-colors shadow-lg">
+              <h3 className="text-lg font-semibold text-white mb-3">YouTube</h3>
               <div className="flex gap-2 mb-3">
-                <input placeholder="Search query or paste URL" value={ytQuery} onChange={(e) => setYtQuery(e.target.value)} className="flex-1 px-3 py-2 rounded text-black" />
-                <button onClick={handleYouTubeSearch} className="px-3 py-2 rounded bg-purple-600">Search</button>
+                <input placeholder="Search or paste URL" value={ytQuery} onChange={(e) => setYtQuery(e.target.value)} className="flex-1 px-4 py-2 rounded-lg bg-slate-700/60 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                <button onClick={handleYouTubeSearch} className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-medium transition-colors">Search</button>
               </div>
               <div className="flex-1 overflow-auto">
                 {ytResults.length > 0 && (
                   <div className="grid grid-cols-1 gap-2">
                     {ytResults.map((r) => (
-                      <button key={r.id.videoId} onClick={() => selectVideo(r.id.videoId)} className="flex items-center gap-2 p-2 rounded bg-white/5 w-full text-left">
-                        <img src={r.snippet.thumbnails.default.url} alt="thumb" className="w-20 h-12 object-cover rounded-sm" />
-                        <div className="text-sm">
-                          <div className="font-medium text-white">{r.snippet.title}</div>
-                          <div className="text-xs text-white/70">{r.snippet.channelTitle}</div>
+                      <button key={r.id.videoId} onClick={() => selectVideo(r.id.videoId)} className="flex items-center gap-2 p-2 rounded-lg bg-slate-700/40 hover:bg-slate-700/60 w-full text-left transition-colors">
+                        <img src={r.snippet.thumbnails.default.url} alt="thumb" className="w-20 h-12 object-cover rounded-md" />
+                        <div className="text-sm flex-1 min-w-0">
+                          <div className="font-medium text-white truncate">{r.snippet.title}</div>
+                          <div className="text-xs text-slate-400 truncate">{r.snippet.channelTitle}</div>
                         </div>
                       </button>
                     ))}
@@ -232,26 +229,29 @@ export const StudyMode = ({ onBack }) => {
                 )}
               </div>
               <div className="mt-3">
-                <button onClick={() => { if (selectedVideoId) setShowVideo(true); }} className="px-4 py-2 rounded bg-red-600">Open Video</button>
+                <button onClick={() => { if (selectedVideoId) setShowVideo(true); }} className="w-full px-4 py-3 rounded-lg bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold transition-all transform hover:scale-105">Open Video</button>
               </div>
             </div>
           </div>
         )}
 
         {running && (
-          <div className="h-full flex items-center justify-center">
-            <div className="flex flex-col items-center gap-6">
-              <div className="w-80 h-80 rounded-full bg-white/6 flex items-center justify-center">
-                <div className="w-64 h-64 rounded-full bg-white/10 flex items-center justify-center">
-                  <div className="text-6xl font-mono">{pad(displayMin)}:{pad(displaySec)}</div>
+          <div className="h-full flex items-center justify-center bg-gradient-to-b from-slate-800/50 to-slate-900/50">
+            <div className="flex flex-col items-center gap-8">
+              <div className="relative w-96 h-96">
+                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 blur-xl"></div>
+                <div className="absolute inset-0 rounded-full border-2 border-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center">
+                  <div className="w-80 h-80 rounded-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center border border-slate-700/50">
+                    <div className="text-7xl font-mono font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">{pad(displayMin)}:{pad(displaySec)}</div>
+                  </div>
                 </div>
               </div>
-              <div className="flex items-center gap-4">
-                <div className="text-sm">Time Remaining</div>
-                <div className="text-sm">{Math.max(0, Math.ceil((durationSec || 0) / 60))} min</div>
+              <div className="text-center">
+                <div className="text-slate-300 text-sm mb-2">Time Remaining</div>
+                <div className="text-3xl font-semibold text-white">{Math.max(0, Math.ceil((durationSec || 0) / 60))} min</div>
               </div>
               <div>
-                <button disabled className="px-6 py-3 rounded bg-gray-500 text-white opacity-60">Exit (locked)</button>
+                <button disabled className="px-8 py-3 rounded-lg bg-slate-700 text-slate-400 opacity-60 cursor-not-allowed font-semibold">Exit (locked)</button>
               </div>
             </div>
           </div>
@@ -260,30 +260,30 @@ export const StudyMode = ({ onBack }) => {
 
       {/* Modals and warnings (same as earlier) */}
       {showPdf && pdfUrl && (
-        <div className="absolute inset-0 bg-black bg-opacity-90 flex items-center justify-center p-6">
-          <div className="w-[90vw] h-[90vh] bg-white rounded-lg overflow-hidden shadow-2xl flex flex-col">
-            <div className="p-3 flex items-center justify-between bg-gray-50 border-b">
-              <div className="font-semibold">PDF Reader</div>
+        <div className="absolute inset-0 bg-black/90 flex items-center justify-center p-6 z-50">
+          <div className="w-[90vw] h-[90vh] bg-slate-900 rounded-xl overflow-hidden shadow-2xl flex flex-col border border-slate-700/50">
+            <div className="p-4 flex items-center justify-between bg-gradient-to-r from-slate-800 to-slate-900 border-b border-slate-700/50">
+              <div className="font-semibold text-white">PDF Reader</div>
               <div className="flex items-center gap-2">
-                <a href={pdfUrl} download={pdfName || 'document.pdf'} className="px-3 py-1 rounded bg-gray-200 text-sm">Download</a>
-                <button onClick={() => { setShowPdf(false); }} className="px-3 py-1 rounded bg-gray-200">Close</button>
+                <a href={pdfUrl} download={pdfName || 'document.pdf'} className="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white text-sm font-medium transition-colors">Download</a>
+                <button onClick={() => { setShowPdf(false); }} className="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white font-medium transition-colors">Close</button>
               </div>
             </div>
-            <iframe src={pdfUrl} className="w-full h-full" title="pdf-reader" />
+            <iframe src={pdfUrl} className="w-full h-full bg-white" title="pdf-reader" />
           </div>
         </div>
       )}
 
       {showVideo && selectedVideoId && (
-        <div className="absolute inset-0 bg-black bg-opacity-95 flex items-center justify-center p-6">
-          <div className="w-[90vw] h-[90vh] bg-black rounded-lg overflow-hidden shadow-2xl flex flex-col">
-            <div className="p-3 flex items-center justify-between bg-black/70 border-b border-white/10">
-              <div className="text-white font-semibold">YouTube</div>
+        <div className="absolute inset-0 bg-black/95 flex items-center justify-center p-6 z-50">
+          <div className="w-[90vw] h-[90vh] bg-slate-900 rounded-xl overflow-hidden shadow-2xl flex flex-col border border-slate-700/50">
+            <div className="p-4 flex items-center justify-between bg-gradient-to-r from-slate-800 to-slate-900 border-b border-slate-700/50">
+              <div className="text-white font-semibold">YouTube Video</div>
               <div className="flex items-center gap-2">
-                <button onClick={() => setShowVideo(false)} className="px-3 py-1 rounded bg-white/10 text-white">Close</button>
+                <button onClick={() => setShowVideo(false)} className="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white font-medium transition-colors">Close</button>
               </div>
             </div>
-            <div className="w-full h-full flex items-center justify-center">
+            <div className="w-full h-full flex items-center justify-center bg-black">
               <iframe
                 src={`https://www.youtube.com/embed/${selectedVideoId}?rel=0&controls=1&modestbranding=1`}
                 title="YouTube video"
@@ -296,13 +296,13 @@ export const StudyMode = ({ onBack }) => {
       )}
 
       {showLeftWarning && (
-        <div className="absolute inset-0 flex items-start justify-center pointer-events-none">
-          <div className="mt-6 px-4 py-2 rounded-md bg-yellow-600 text-white font-medium">Stay focused! You left Study Mode.</div>
+        <div className="absolute inset-0 flex items-start justify-center pointer-events-none z-40">
+          <div className="mt-6 px-6 py-3 rounded-lg bg-gradient-to-r from-yellow-500 to-orange-500 text-white font-semibold shadow-lg">Stay focused! You left Study Mode.</div>
         </div>
       )}
 
       {showFsWarning && (
-        <div className="absolute top-6 right-6 px-3 py-2 rounded-md bg-red-600 text-white font-medium">Fullscreen exited — attempting to re-enter</div>
+        <div className="absolute top-6 right-6 px-6 py-3 rounded-lg bg-gradient-to-r from-red-500 to-red-600 text-white font-semibold shadow-lg z-40">Fullscreen exited — attempting to re-enter</div>
       )}
 
     </div>
