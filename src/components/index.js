@@ -25,5 +25,6 @@ export { AboutDeveloperPage } from './AboutDeveloperPage';
 export { AiAssistantPanel } from './AiAssistantPanel';
 export { SmartSuggestionsModal } from './SmartSuggestionsModal';
 export { WeatherWidget } from './WeatherWidget';
+export { TimeTablePage } from './TimeTablePage';
 
 

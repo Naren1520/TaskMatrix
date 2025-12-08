@@ -4,7 +4,7 @@ import { FiMenu } from 'react-icons/fi';
 import { useProfile } from '../context/ProfileContext';
 import logo from '../assets/logo.png';
 
-export const Header = ({ isDarkMode, onToggleDarkMode, onOpenSettings, onNavigate, onOpenAI, onOpenSmartSuggestions }) => {
+export const Header = ({ isDarkMode, onToggleDarkMode, onOpenSettings, onNavigate, onOpenAI, onOpenSmartSuggestions, onOpenTimeTable }) => {
   const { profile } = useProfile();
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [now, setNow] = React.useState(() => new Date());
@@ -92,6 +92,7 @@ export const Header = ({ isDarkMode, onToggleDarkMode, onOpenSettings, onNavigat
                 <button onClick={() => handleNavigate('templates')} className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Templates</button>
                 <button onClick={() => handleNavigate('plugins')} className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Plugins</button>
                 <button onClick={() => handleNavigate('timeline')} className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Timeline</button>
+                <button onClick={() => { setMenuOpen(false); onOpenTimeTable && onOpenTimeTable(); }} className="w-full text-left px-4 py-2 text-sm text-indigo-600 dark:text-indigo-400 hover:bg-gray-100 dark:hover:bg-gray-700 font-semibold">Time Table</button>
                 <button onClick={() => handleNavigate('other')} className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Other Services</button>
                 <button onClick={() => handleNavigate('guide')} className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Guide</button>
                 <div className="border-t border-gray-200 dark:border-gray-700 my-1"></div>

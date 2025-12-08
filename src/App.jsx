@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Header, TodoInput, TodoList, FilterButtons, Footer, AlarmReminderNotification, SettingsPage, CalendarView, AnalyticsPage, Loader, TemplatesPage, PluginsPage, TimelinePage, GuidePage, OtherServicesPage, AboutDeveloperPage, AiAssistantPanel, SmartSuggestionsModal, WeatherWidget } from './components';
+import { Header, TodoInput, TodoList, FilterButtons, Footer, AlarmReminderNotification, SettingsPage, CalendarView, AnalyticsPage, Loader, TemplatesPage, PluginsPage, TimelinePage, GuidePage, OtherServicesPage, AboutDeveloperPage, AiAssistantPanel, SmartSuggestionsModal, WeatherWidget, TimeTablePage } from './components';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { useAlarmNotifications, playNotificationSound } from './hooks/useAlarmNotifications';
 import useGeofenceWatcher from './hooks/useGeofenceWatcher';
@@ -21,6 +21,7 @@ function App() {
   // AI & Weather Features
   const [isAiPanelOpen, setIsAiPanelOpen] = useState(false);
   const [isSmartSuggestionsOpen, setIsSmartSuggestionsOpen] = useState(false);
+  const [isTimeTableOpen, setIsTimeTableOpen] = useState(false);
   const [currentWeather, setCurrentWeather] = useState(null);
 
   // App-level UI state
@@ -211,6 +212,7 @@ function App() {
           onOpenSettings={() => setIsSettingsOpen(true)}
           onOpenAI={() => setIsAiPanelOpen(true)}
           onOpenSmartSuggestions={() => setIsSmartSuggestionsOpen(true)}
+          onOpenTimeTable={() => setIsTimeTableOpen(true)}
           onNavigate={(p) => {
             // close settings if open whenever navigating via header menu
             setIsSettingsOpen(false);
@@ -264,6 +266,12 @@ function App() {
           bulkImport(newTasks);
         }}
         currentWeather={currentWeather}
+      />
+
+      {/* TimeTable Page */}
+      <TimeTablePage
+        isOpen={isTimeTableOpen}
+        onClose={() => setIsTimeTableOpen(false)}
       />
     </div>
   );
