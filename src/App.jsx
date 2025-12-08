@@ -162,7 +162,7 @@ function App() {
             {import.meta.env.VITE_ENABLE_WEATHER === 'true' && (
               <div className="mb-4">
                 <WeatherWidget 
-                  city="London"
+                  city="Mangaluru"
                   onWeatherChange={(weather) => setCurrentWeather(weather)}
                 />
               </div>

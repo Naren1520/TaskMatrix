@@ -3,7 +3,7 @@ import { FiMapPin, FiRefreshCw } from 'react-icons/fi';
 import { motion } from 'framer-motion';
 import { getWeatherByCity, getWeatherAlerts, getWeatherIconUrl } from '../utils/weatherService';
 
-export const WeatherWidget = ({ city = 'London', onWeatherChange }) => {
+export const WeatherWidget = ({ city = 'Mangaluru', onWeatherChange }) => {
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
