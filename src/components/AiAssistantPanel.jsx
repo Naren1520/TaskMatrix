@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FiX, FiSend, FiRefreshCw, FiZap } from 'react-icons/fi';
+import { FiX, FiSend, FiRefreshCw } from 'react-icons/fi';
 import { motion } from 'framer-motion';
 import { askAI } from '../utils/aiService';
+import logo from '../assets/logo.png';
 
 export const AiAssistantPanel = ({ isOpen, onClose, todos, currentWeather }) => {
   const [messages, setMessages] = useState([
@@ -88,7 +89,7 @@ export const AiAssistantPanel = ({ isOpen, onClose, todos, currentWeather }) => 
       {/* Header */}
       <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4 rounded-t-lg flex justify-between items-center">
         <h3 className="font-semibold flex items-center gap-2">
-          <FiZap size={20} />
+          <img src={logo} alt="logo" className="w-8 h-8 rounded-full object-cover border-2 border-white" />
           AI Assistant
         </h3>
         <button
