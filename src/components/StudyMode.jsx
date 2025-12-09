@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useStudyMode } from '../context/StudyModeContext';
 import { useFullscreen } from '../hooks/useFullscreen';
 import { usePreventNavigation } from '../hooks/usePreventNavigation';
+import { FiBook, FiYoutube, FiClock, FiX } from 'react-icons/fi';
 
 const pad = (n) => String(n).padStart(2, '0');
 
@@ -152,121 +153,438 @@ export const StudyMode = ({ onBack }) => {
   const displayMin = Math.floor(secsLeft / 60);
   const displaySec = secsLeft % 60;
 
+  const isDark = document.documentElement.classList.contains('dark');
+
+  const bgClass = isDark ? 'bg-slate-950' : 'bg-white';
+  const cardClass = isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200';
+  const textClass = isDark ? 'text-slate-100' : 'text-slate-900';
+  const mutedClass = isDark ? 'text-slate-400' : 'text-slate-600';
+  const inputClass = isDark 
+    ? 'bg-slate-800 border-slate-700 text-slate-100 placeholder-slate-500 focus:border-blue-500' 
+    : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400 focus:border-blue-500';
+  const hoverClass = isDark ? 'hover:bg-slate-800' : 'hover:bg-slate-100';
+
   return (
-    <div ref={containerRef} className="fixed inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 text-white z-50 flex flex-col">
+    <div ref={containerRef} className={`fixed inset-0 ${bgClass} ${textClass} z-50 flex flex-col`}>
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-slate-700/50 dark:border-slate-700">
-        <div>
-          <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Study Mode</h2>
-          <div className="text-sm text-slate-400">Focus and study tools</div>
-        </div>
+      <div className={`flex items-center justify-between px-6 py-4 border-b ${isDark ? 'border-slate-800' : 'border-slate-200'} bg-gradient-to-r ${isDark ? 'from-slate-900 to-slate-800' : 'from-slate-50 to-white'}`}>
         <div className="flex items-center gap-3">
-          {!running && <button onClick={() => { if (onBack) onBack(); }} className="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white transition-colors">Close</button>}
-          {running && <div className="px-4 py-2 rounded-lg bg-gradient-to-r from-red-500 to-red-600 text-white font-medium">Session Running</div>}
+          <div className={`p-2 rounded-lg ${isDark ? 'bg-blue-500/20' : 'bg-blue-100'}`}>
+            <FiClock className={`w-5 h-5 ${isDark ? 'text-blue-400' : 'text-blue-600'}`} />
+          </div>
+          <div>
+            <h2 className={`text-xl font-bold ${isDark ? 'text-slate-50' : 'text-slate-900'}`}>Study Mode</h2>
+            <p className={`text-xs ${mutedClass}`}>Focus and minimize distractions</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          {!running && (
+            <button
+              onClick={() => { if (onBack) onBack(); }}
+              className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-slate-800 text-slate-400' : 'hover:bg-slate-100 text-slate-500'}`}
+            >
+              <FiX className="w-5 h-5" />
+            </button>
+          )}
+          {running && (
+            <div className={`px-4 py-2 rounded-lg font-medium text-sm ${isDark ? 'bg-red-500/20 text-red-400' : 'bg-red-100 text-red-700'}`}>
+              ● Session Active
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Main content grid */}
-      <div className="flex-1 p-6 overflow-auto bg-gradient-to-b from-slate-800/50 to-slate-900/50">
+      {/* Main content */}
+      <div className={`flex-1 p-8 overflow-auto ${isDark ? 'bg-slate-950' : 'bg-white'}`}>
         {!running && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
-            {/* Timer Card */}
-            <div className="bg-slate-800/40 dark:bg-slate-800/60 rounded-xl p-6 flex flex-col border border-slate-700/50 hover:border-slate-600/50 transition-colors shadow-lg">
-              <h3 className="text-lg font-semibold text-white mb-4">Study Timer</h3>
-              <div className="flex gap-2 mb-4 flex-wrap">
-                <button onClick={() => setMinutesInput(25)} className="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white text-sm font-medium transition-colors">25m</button>
-                <button onClick={() => setMinutesInput(50)} className="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white text-sm font-medium transition-colors">50m</button>
-                <button onClick={() => setMinutesInput(15)} className="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white text-sm font-medium transition-colors">15m</button>
-              </div>
-              <div className="flex items-center gap-3 mb-4">
-                <input type="number" min={1} value={minutesInput} onChange={(e) => setMinutesInput(Number(e.target.value || 0))} className="w-24 px-3 py-2 rounded-lg bg-slate-700/60 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                <span className="text-slate-300">minutes</span>
-              </div>
-              <div className="flex gap-3 mt-auto">
-                <button onClick={() => handleStart(minutesInput * 60)} className="flex-1 px-6 py-3 rounded-lg bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold transition-all transform hover:scale-105">Start</button>
-                <button onClick={() => { if (onBack) onBack(); }} className="px-6 py-3 rounded-lg bg-slate-700 hover:bg-slate-600 text-white font-medium transition-colors">Cancel</button>
-              </div>
-            </div>
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Timer Card */}
+              <div className={`${cardClass} rounded-xl p-6 flex flex-col border transition-colors`}>
+                <div className="flex items-center gap-2 mb-6">
+                  <div className={`p-2 rounded-lg ${isDark ? 'bg-blue-500/20' : 'bg-blue-100'}`}>
+                    <FiClock className={`w-4 h-4 ${isDark ? 'text-blue-400' : 'text-blue-600'}`} />
+                  </div>
+                  <h3 className="text-lg font-semibold">Study Timer</h3>
+                </div>
 
-            {/* PDF Card */}
-            <div className="bg-slate-800/40 dark:bg-slate-800/60 rounded-xl p-6 flex flex-col border border-slate-700/50 hover:border-slate-600/50 transition-colors shadow-lg">
-              <h3 className="text-lg font-semibold text-white mb-3">Read PDF</h3>
-              <input type="file" accept="application/pdf" onChange={(e) => {
-                const f = e.target.files && e.target.files[0];
-                if (f) {
-                  const url = URL.createObjectURL(f);
-                  setPdfUrl(url);
-                  setPdfName(f.name || 'document');
-                  setShowPdf(true);
-                }
-              }} className="text-sm text-slate-300 mb-3 file:mr-3 file:px-4 file:py-2 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-slate-700 file:text-white hover:file:bg-slate-600" />
-              {pdfUrl && <div className="text-sm text-slate-400 mb-3 flex items-center gap-2"><span className="w-2 h-2 bg-green-500 rounded-full"></span>Loaded: {pdfName || 'document'}</div>}
-              <div className="mt-auto">
-                <button onClick={() => { if (pdfUrl) setShowPdf(true); }} className="w-full px-4 py-3 rounded-lg bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white font-semibold transition-all transform hover:scale-105">Open Reader</button>
-              </div>
-            </div>
+                <div className="space-y-5">
+                  <div>
+                    <label className={`text-xs font-semibold ${mutedClass} mb-3 block uppercase tracking-wide`}>Quick Presets</label>
+                    <div className="flex gap-2 flex-wrap">
+                      {[25, 50, 15].map((min) => (
+                        <button
+                          key={min}
+                          onClick={() => setMinutesInput(min)}
+                          className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+                            minutesInput === min
+                              ? isDark
+                                ? 'bg-blue-600 text-white shadow-lg'
+                                : 'bg-blue-500 text-white shadow-lg'
+                              : isDark
+                              ? 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                              : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                          }`}
+                        >
+                          {min}m
+                        </button>
+                      ))}
+                    </div>
+                  </div>
 
-            {/* YouTube Card */}
-            <div className="bg-slate-800/40 dark:bg-slate-800/60 rounded-xl p-6 flex flex-col border border-slate-700/50 hover:border-slate-600/50 transition-colors shadow-lg">
-              <h3 className="text-lg font-semibold text-white mb-3">YouTube</h3>
-              <div className="flex gap-2 mb-3">
-                <input placeholder="Search or paste URL" value={ytQuery} onChange={(e) => setYtQuery(e.target.value)} className="flex-1 px-4 py-2 rounded-lg bg-slate-700/60 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500" />
-                <button onClick={handleYouTubeSearch} className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-medium transition-colors">Search</button>
+                  <div>
+                    <label className={`text-xs font-semibold ${mutedClass} mb-2 block uppercase tracking-wide`}>Custom Duration</label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="number"
+                        min={1}
+                        max={180}
+                        value={minutesInput}
+                        onChange={(e) => setMinutesInput(Number(e.target.value || 0))}
+                        className={`w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-500 ${inputClass}`}
+                        placeholder="Minutes"
+                      />
+                      <span className={`text-sm font-medium ${mutedClass}`}>min</span>
+                    </div>
+                  </div>
+
+                  <div className={`flex gap-3 mt-6 pt-5 border-t ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
+                    <button
+                      onClick={() => handleStart(minutesInput * 60)}
+                      className={`flex-1 px-4 py-3 rounded-lg font-semibold transition-all ${
+                        isDark
+                          ? 'bg-green-600 hover:bg-green-700 text-white shadow-lg'
+                          : 'bg-green-500 hover:bg-green-600 text-white shadow-lg'
+                      }`}
+                    >
+                      Start Study
+                    </button>
+                    <button
+                      onClick={() => { if (onBack) onBack(); }}
+                      className={`px-6 py-3 rounded-lg font-medium transition-colors ${
+                        isDark
+                          ? 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+                          : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                      }`}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
               </div>
-              <div className="flex-1 overflow-auto">
-                {ytResults.length > 0 && (
-                  <div className="grid grid-cols-1 gap-2">
-                    {ytResults.map((r) => (
-                      <button key={r.id.videoId} onClick={() => selectVideo(r.id.videoId)} className="flex items-center gap-2 p-2 rounded-lg bg-slate-700/40 hover:bg-slate-700/60 w-full text-left transition-colors">
-                        <img src={r.snippet.thumbnails.default.url} alt="thumb" className="w-20 h-12 object-cover rounded-md" />
-                        <div className="text-sm flex-1 min-w-0">
-                          <div className="font-medium text-white truncate">{r.snippet.title}</div>
-                          <div className="text-xs text-slate-400 truncate">{r.snippet.channelTitle}</div>
-                        </div>
-                      </button>
-                    ))}
+
+              {/* PDF Card */}
+              <div className={`${cardClass} rounded-xl p-6 flex flex-col border transition-colors`}>
+                <div className="flex items-center gap-2 mb-6">
+                  <div className={`p-2 rounded-lg ${isDark ? 'bg-purple-500/20' : 'bg-purple-100'}`}>
+                    <FiBook className={`w-4 h-4 ${isDark ? 'text-purple-400' : 'text-purple-600'}`} />
+                  </div>
+                  <h3 className="text-lg font-semibold">Read PDF</h3>
+                </div>
+
+                {!pdfUrl ? (
+                  <div className="flex-1 flex flex-col items-center justify-center gap-4 text-center py-8">
+                    <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${isDark ? 'bg-slate-800' : 'bg-slate-100'}`}>
+                      <FiBook className={`w-6 h-6 ${isDark ? 'text-purple-400' : 'text-purple-600'}`} />
+                    </div>
+                    <div>
+                      <p className={`text-sm font-medium ${mutedClass}`}>Upload a PDF file</p>
+                      <p className={`text-xs ${mutedClass}`}>to read during study session</p>
+                    </div>
+                    <input
+                      type="file"
+                      accept="application/pdf"
+                      onChange={(e) => {
+                        const f = e.target.files && e.target.files[0];
+                        if (f) {
+                          const url = URL.createObjectURL(f);
+                          setPdfUrl(url);
+                          setPdfName(f.name || 'document');
+                        }
+                      }}
+                      className="hidden"
+                      id="pdf-input"
+                    />
+                    <label
+                      htmlFor="pdf-input"
+                      className={`cursor-pointer px-5 py-2 rounded-lg font-semibold transition-all ${
+                        isDark
+                          ? 'bg-purple-600 hover:bg-purple-700 text-white shadow-lg'
+                          : 'bg-purple-500 hover:bg-purple-600 text-white shadow-lg'
+                      }`}
+                    >
+                      Choose PDF
+                    </label>
+                  </div>
+                ) : (
+                  <div className="flex-1 flex flex-col justify-between">
+                    <div className={`px-4 py-3 rounded-lg border ${isDark ? 'bg-slate-800/50 border-slate-700' : 'bg-slate-50 border-slate-200'} mb-4`}>
+                      <p className={`text-xs ${mutedClass} mb-1 font-semibold`}>LOADED FILE</p>
+                      <p className="font-medium truncate">{pdfName}</p>
+                    </div>
+                    <button
+                      onClick={() => setShowPdf(true)}
+                      className={`w-full px-4 py-3 rounded-lg font-semibold transition-all ${
+                        isDark
+                          ? 'bg-purple-600 hover:bg-purple-700 text-white shadow-lg'
+                          : 'bg-purple-500 hover:bg-purple-600 text-white shadow-lg'
+                      }`}
+                    >
+                      Open Reader
+                    </button>
                   </div>
                 )}
               </div>
-              <div className="mt-3">
-                <button onClick={() => { if (selectedVideoId) setShowVideo(true); }} className="w-full px-4 py-3 rounded-lg bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold transition-all transform hover:scale-105">Open Video</button>
+
+              {/* YouTube Card */}
+              <div className={`${cardClass} rounded-xl p-6 flex flex-col border transition-colors`}>
+                <div className="flex items-center gap-2 mb-6">
+                  <div className={`p-2 rounded-lg ${isDark ? 'bg-red-500/20' : 'bg-red-100'}`}>
+                    <FiYoutube className={`w-4 h-4 ${isDark ? 'text-red-400' : 'text-red-600'}`} />
+                  </div>
+                  <h3 className="text-lg font-semibold">YouTube</h3>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="flex gap-2">
+                    <input
+                      placeholder="Search or paste URL"
+                      value={ytQuery}
+                      onChange={(e) => setYtQuery(e.target.value)}
+                      className={`flex-1 px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-red-500 ${inputClass}`}
+                    />
+                    <button
+                      onClick={handleYouTubeSearch}
+                      className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+                        isDark
+                          ? 'bg-red-600 hover:bg-red-700 text-white'
+                          : 'bg-red-500 hover:bg-red-600 text-white'
+                      }`}
+                    >
+                      Search
+                    </button>
+                  </div>
+
+                  <div className={`flex-1 overflow-auto max-h-48 border rounded-lg p-3 ${isDark ? 'border-slate-800 bg-slate-800/50' : 'border-slate-200 bg-slate-50'}`}>
+                    {ytResults.length > 0 ? (
+                      <div className="space-y-2">
+                        {ytResults.map((r) => (
+                          <button
+                            key={r.id.videoId}
+                            onClick={() => selectVideo(r.id.videoId)}
+                            className={`w-full flex gap-2 p-2 rounded-lg transition-colors text-left ${hoverClass}`}
+                          >
+                            <img src={r.snippet.thumbnails.default.url} alt="thumb" className="w-14 h-10 object-cover rounded" />
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs font-medium truncate">{r.snippet.title}</p>
+                              <p className={`text-xs ${mutedClass} truncate`}>{r.snippet.channelTitle}</p>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className={`text-xs text-center ${mutedClass}`}>Search for videos or paste a URL</p>
+                    )}
+                  </div>
+
+                  <button
+                    onClick={() => { if (selectedVideoId) setShowVideo(true); }}
+                    disabled={!selectedVideoId}
+                    className={`w-full px-4 py-3 rounded-lg font-semibold transition-all ${
+                      selectedVideoId
+                        ? isDark
+                          ? 'bg-red-600 hover:bg-red-700 text-white shadow-lg'
+                          : 'bg-red-500 hover:bg-red-600 text-white shadow-lg'
+                        : isDark
+                        ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                        : 'bg-slate-100 text-slate-500 cursor-not-allowed'
+                    }`}
+                  >
+                    {selectedVideoId ? 'Open Video' : 'Select Video First'}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         )}
 
         {running && (
-          <div className="h-full flex items-center justify-center bg-gradient-to-b from-slate-800/50 to-slate-900/50">
-            <div className="flex flex-col items-center gap-8">
-              <div className="relative w-96 h-96">
-                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 blur-xl"></div>
-                <div className="absolute inset-0 rounded-full border-2 border-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center">
-                  <div className="w-80 h-80 rounded-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center border border-slate-700/50">
-                    <div className="text-7xl font-mono font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">{pad(displayMin)}:{pad(displaySec)}</div>
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Timer Column */}
+              <div className="flex flex-col items-center justify-center">
+                <div className={`${cardClass} rounded-2xl p-8 flex flex-col items-center justify-center border`}>
+                  <div className="text-5xl font-bold font-mono mb-4">{pad(displayMin)}:{pad(displaySec)}</div>
+                  <p className={`text-sm font-semibold ${mutedClass} uppercase tracking-wide`}>Study Time</p>
+                  <div className={`mt-6 px-4 py-2 rounded-lg text-sm font-medium ${isDark ? 'bg-slate-800 text-slate-300' : 'bg-slate-100 text-slate-600'}`}>
+                    {Math.max(0, Math.ceil((durationSec || 0) / 60))} minutes remaining
                   </div>
                 </div>
               </div>
-              <div className="text-center">
-                <div className="text-slate-300 text-sm mb-2">Time Remaining</div>
-                <div className="text-3xl font-semibold text-white">{Math.max(0, Math.ceil((durationSec || 0) / 60))} min</div>
+
+              {/* PDF Column */}
+              <div className={`${cardClass} rounded-xl p-6 flex flex-col border transition-colors`}>
+                <div className="flex items-center gap-2 mb-4">
+                  <div className={`p-2 rounded-lg ${isDark ? 'bg-purple-500/20' : 'bg-purple-100'}`}>
+                    <FiBook className={`w-4 h-4 ${isDark ? 'text-purple-400' : 'text-purple-600'}`} />
+                  </div>
+                  <h3 className="font-semibold">Read PDF</h3>
+                </div>
+
+                {!pdfUrl ? (
+                  <>
+                    <input
+                      type="file"
+                      accept="application/pdf"
+                      onChange={(e) => {
+                        const f = e.target.files && e.target.files[0];
+                        if (f) {
+                          const url = URL.createObjectURL(f);
+                          setPdfUrl(url);
+                          setPdfName(f.name || 'document');
+                        }
+                      }}
+                      className="hidden"
+                      id="pdf-input-running"
+                    />
+                    <label
+                      htmlFor="pdf-input-running"
+                      className={`cursor-pointer flex-1 flex flex-col items-center justify-center px-4 py-6 rounded-lg border-2 border-dashed transition-colors ${
+                        isDark
+                          ? 'border-slate-700 hover:border-purple-500 hover:bg-purple-500/10'
+                          : 'border-slate-300 hover:border-purple-500 hover:bg-purple-50'
+                      }`}
+                    >
+                      <FiBook className={`w-8 h-8 mb-2 ${isDark ? 'text-purple-400' : 'text-purple-600'}`} />
+                      <p className={`text-sm font-medium ${mutedClass}`}>Upload PDF</p>
+                    </label>
+                  </>
+                ) : (
+                  <>
+                    <div className={`px-3 py-2 rounded-lg ${isDark ? 'bg-slate-800' : 'bg-slate-100'} mb-3`}>
+                      <p className={`text-xs ${mutedClass} mb-1 font-semibold`}>LOADED</p>
+                      <p className="text-sm font-medium truncate">{pdfName}</p>
+                    </div>
+                    <button
+                      onClick={() => setShowPdf(true)}
+                      className={`w-full px-4 py-3 rounded-lg font-semibold transition-all ${
+                        isDark
+                          ? 'bg-purple-600 hover:bg-purple-700 text-white'
+                          : 'bg-purple-500 hover:bg-purple-600 text-white'
+                      }`}
+                    >
+                      Open Reader
+                    </button>
+                  </>
+                )}
               </div>
-              <div>
-                <button disabled className="px-8 py-3 rounded-lg bg-slate-700 text-slate-400 opacity-60 cursor-not-allowed font-semibold">Exit (locked)</button>
+
+              {/* YouTube Column */}
+              <div className={`${cardClass} rounded-xl p-6 flex flex-col border transition-colors`}>
+                <div className="flex items-center gap-2 mb-4">
+                  <div className={`p-2 rounded-lg ${isDark ? 'bg-red-500/20' : 'bg-red-100'}`}>
+                    <FiYoutube className={`w-4 h-4 ${isDark ? 'text-red-400' : 'text-red-600'}`} />
+                  </div>
+                  <h3 className="font-semibold">YouTube</h3>
+                </div>
+
+                <div className="flex gap-2 mb-3">
+                  <input
+                    placeholder="Search or paste URL"
+                    value={ytQuery}
+                    onChange={(e) => setYtQuery(e.target.value)}
+                    className={`flex-1 px-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-red-500 ${inputClass}`}
+                  />
+                  <button
+                    onClick={handleYouTubeSearch}
+                    className={`px-3 py-2 rounded-lg font-medium transition-colors text-sm ${
+                      isDark
+                        ? 'bg-red-600 hover:bg-red-700 text-white'
+                        : 'bg-red-500 hover:bg-red-600 text-white'
+                    }`}
+                  >
+                    Search
+                  </button>
+                </div>
+
+                <div className={`flex-1 overflow-auto border rounded-lg p-2 mb-3 ${isDark ? 'border-slate-800 bg-slate-800/50' : 'border-slate-200 bg-slate-50'}`}>
+                  {ytResults.length > 0 ? (
+                    <div className="space-y-1">
+                      {ytResults.map((r) => (
+                        <button
+                          key={r.id.videoId}
+                          onClick={() => selectVideo(r.id.videoId)}
+                          className={`w-full flex gap-2 p-1 rounded transition-colors text-left text-xs ${hoverClass}`}
+                        >
+                          <img src={r.snippet.thumbnails.default.url} alt="thumb" className="w-12 h-8 object-cover rounded" />
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium truncate">{r.snippet.title}</p>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className={`text-xs text-center ${mutedClass}`}>Search videos</p>
+                  )}
+                  {selectedVideoId && (
+                    <div className={`px-2 py-1 rounded text-xs font-medium text-center mt-2 ${isDark ? 'bg-green-500/20 text-green-400' : 'bg-green-100 text-green-700'}`}>
+                      ✓ Selected
+                    </div>
+                  )}
+                </div>
+
+                <button
+                  onClick={() => { if (selectedVideoId) setShowVideo(true); }}
+                  disabled={!selectedVideoId}
+                  className={`w-full px-4 py-2 rounded-lg font-semibold transition-all text-sm ${
+                    selectedVideoId
+                      ? isDark
+                        ? 'bg-red-600 hover:bg-red-700 text-white'
+                        : 'bg-red-500 hover:bg-red-600 text-white'
+                      : isDark
+                      ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                      : 'bg-slate-100 text-slate-500 cursor-not-allowed'
+                  }`}
+                >
+                  Play Video
+                </button>
               </div>
             </div>
           </div>
         )}
       </div>
 
-      {/* Modals and warnings (same as earlier) */}
+      {/* PDF Modal */}
       {showPdf && pdfUrl && (
-        <div className="absolute inset-0 bg-black/90 flex items-center justify-center p-6 z-50">
-          <div className="w-[90vw] h-[90vh] bg-slate-900 rounded-xl overflow-hidden shadow-2xl flex flex-col border border-slate-700/50">
-            <div className="p-4 flex items-center justify-between bg-gradient-to-r from-slate-800 to-slate-900 border-b border-slate-700/50">
-              <div className="font-semibold text-white">PDF Reader</div>
-              <div className="flex items-center gap-2">
-                <a href={pdfUrl} download={pdfName || 'document.pdf'} className="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white text-sm font-medium transition-colors">Download</a>
-                <button onClick={() => { setShowPdf(false); }} className="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white font-medium transition-colors">Close</button>
+        <div className={`absolute inset-0 flex items-center justify-center p-4 z-50 ${isDark ? 'bg-black/70' : 'bg-black/50'}`}>
+          <div className={`w-[95vw] h-[95vh] ${cardClass} rounded-xl overflow-hidden shadow-2xl flex flex-col border max-w-6xl`}>
+            <div className={`p-4 flex items-center justify-between border-b ${isDark ? 'border-slate-800' : 'border-slate-200'} ${isDark ? 'bg-slate-900' : 'bg-slate-50'}`}>
+              <h3 className="font-semibold flex items-center gap-2 truncate">
+                <FiBook className={isDark ? 'text-purple-400' : 'text-purple-600'} />
+                <span className="truncate">{pdfName}</span>
+              </h3>
+              <div className="flex gap-2">
+                <a
+                  href={pdfUrl}
+                  download={pdfName || 'document.pdf'}
+                  className={`px-4 py-2 rounded-lg font-medium transition-colors text-sm whitespace-nowrap ${
+                    isDark
+                      ? 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+                      : 'bg-slate-200 hover:bg-slate-300 text-slate-700'
+                  }`}
+                >
+                  Download
+                </a>
+                <button
+                  onClick={() => setShowPdf(false)}
+                  className={`px-4 py-2 rounded-lg font-medium transition-colors text-sm ${
+                    isDark
+                      ? 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+                      : 'bg-slate-200 hover:bg-slate-300 text-slate-700'
+                  }`}
+                >
+                  Close
+                </button>
               </div>
             </div>
             <iframe src={pdfUrl} className="w-full h-full bg-white" title="pdf-reader" />
@@ -274,14 +592,25 @@ export const StudyMode = ({ onBack }) => {
         </div>
       )}
 
+      {/* YouTube Modal */}
       {showVideo && selectedVideoId && (
-        <div className="absolute inset-0 bg-black/95 flex items-center justify-center p-6 z-50">
-          <div className="w-[90vw] h-[90vh] bg-slate-900 rounded-xl overflow-hidden shadow-2xl flex flex-col border border-slate-700/50">
-            <div className="p-4 flex items-center justify-between bg-gradient-to-r from-slate-800 to-slate-900 border-b border-slate-700/50">
-              <div className="text-white font-semibold">YouTube Video</div>
-              <div className="flex items-center gap-2">
-                <button onClick={() => setShowVideo(false)} className="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white font-medium transition-colors">Close</button>
-              </div>
+        <div className={`absolute inset-0 flex items-center justify-center p-4 z-50 ${isDark ? 'bg-black/70' : 'bg-black/50'}`}>
+          <div className={`w-[95vw] h-[95vh] ${cardClass} rounded-xl overflow-hidden shadow-2xl flex flex-col border max-w-6xl`}>
+            <div className={`p-4 flex items-center justify-between border-b ${isDark ? 'border-slate-800' : 'border-slate-200'} ${isDark ? 'bg-slate-900' : 'bg-slate-50'}`}>
+              <h3 className="font-semibold flex items-center gap-2">
+                <FiYoutube className={isDark ? 'text-red-400' : 'text-red-600'} />
+                Video
+              </h3>
+              <button
+                onClick={() => setShowVideo(false)}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors text-sm ${
+                  isDark
+                    ? 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+                    : 'bg-slate-200 hover:bg-slate-300 text-slate-700'
+                }`}
+              >
+                Close
+              </button>
             </div>
             <div className="w-full h-full flex items-center justify-center bg-black">
               <iframe
@@ -295,16 +624,20 @@ export const StudyMode = ({ onBack }) => {
         </div>
       )}
 
+      {/* Warnings */}
       {showLeftWarning && (
-        <div className="absolute inset-0 flex items-start justify-center pointer-events-none z-40">
-          <div className="mt-6 px-6 py-3 rounded-lg bg-gradient-to-r from-yellow-500 to-orange-500 text-white font-semibold shadow-lg">Stay focused! You left Study Mode.</div>
+        <div className="absolute inset-0 flex items-start justify-center pointer-events-none z-40 pt-8">
+          <div className={`px-6 py-3 rounded-lg font-semibold shadow-lg animate-pulse ${isDark ? 'bg-amber-500 text-white' : 'bg-amber-100 text-amber-900'}`}>
+            ⚠️ Stay focused! You left Study Mode
+          </div>
         </div>
       )}
 
       {showFsWarning && (
-        <div className="absolute top-6 right-6 px-6 py-3 rounded-lg bg-gradient-to-r from-red-500 to-red-600 text-white font-semibold shadow-lg z-40">Fullscreen exited — attempting to re-enter</div>
+        <div className={`absolute top-6 right-6 px-6 py-3 rounded-lg font-semibold shadow-lg animate-pulse z-40 ${isDark ? 'bg-red-500 text-white' : 'bg-red-100 text-red-900'}`}>
+          ⚠️ Fullscreen exited
+        </div>
       )}
-
     </div>
   );
 };
