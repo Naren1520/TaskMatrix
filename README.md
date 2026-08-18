@@ -17,7 +17,7 @@ It focuses on powerful task creation, reminders, scheduling, templates, geofenci
 
 ---
 ## Deployment
-* https://task-matrix-three.vercel.app/
+* https://taskmatrix-n.vercel.app/
 
 ##  Features at a Glance
 
